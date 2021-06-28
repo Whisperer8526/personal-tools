@@ -1,4 +1,16 @@
 def get_multi_countplot(data, n_row=1, n_col=1, figsize=(20,20)):
+  '''
+  Draws countplot for every column in dataset
+   
+  Arguments:
+    data : pandas DataFrame
+    n_row : (optional) number of rows
+    n_col : (optional) number of columns
+    figsize : (optional) plot size in inches
+    
+  Returns:
+    Plot containing subplots
+  '''
   
   import seaborn as sns
   import matplotlib.pyplot as plt

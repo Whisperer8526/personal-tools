@@ -12,16 +12,20 @@ def load_image(img, resize=False, bw=False, img_size=256):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     return image
 
-def binarize_image(img, clip_limit=40, threshold=80, max_val=255, blur=False, bl=3):
+
+def binarize_image(img, clip_limit=40, threshold=80, max_val=255, blur=None):
     import cv2
     clahe = cv2.createCLAHE(clipLimit=clip_limit)
     
     image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)             # conversion to BW
     image = cv2.equalizeHist(image)                      # histogram equalization
     image = clahe.apply(image)
-    ret, image = cv2.threshold(image, threshold, max_val,  cv2.THRESH_OTSU)
-    ret, image = cv2.threshold(image,0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU) # image binarizatiom
+    ret, image = cv2.threshold(image, threshold, max_val, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     if blur:
-        image = cv2.medianBlur(image, bl)                 # applying blur
+        try:
+            image = cv2.medianBlur(image, blur)                 # applying blur
+        except:
+            blur -= 1
+            image = cv2.medianBlur(image, blur)
     
     return image

@@ -33,3 +33,40 @@ def get_clean_url(link: str):
         
         else:
             return link
+        
+ 
+def map_post_id(link: str):
+    try:
+        if 'twitter.com' in link:
+            return int(link.split('/')[-1].split('?')[0])
+        if 'tiktok.com' in link:
+            return int(link.split('/')[-1])
+        elif 'facebook.com' in link:
+            try:
+                post_id = int(link.split('/')[-1])
+            except:
+                if '?dco_ad_id' in link:
+                    return int(link.split('?dco_ad_id')[0].split('/')[-1])
+                else:
+                    try:
+                        post_id = int(link.split('/')[-2])
+                    except:
+                        post_id = 0
+
+            return post_id
+        
+        elif 'instagram.com' in link:
+            post_id = link.split('/')[-1]
+            if '#advertiser' in post_id:
+                return link.split('/')[-2]
+            elif len(post_id) != 0 and 'copy_link' not in post_id:
+                return post_id
+            else:
+                return link.split('/')[-2]
+
+        elif 'youtube.com' in link:
+            return link.split('?v=')[-1]
+        else:
+            return np.nan
+    except:
+        return np.nan

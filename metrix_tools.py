@@ -70,3 +70,16 @@ def map_post_id(link: str):
             return np.nan
     except:
         return np.nan
+
+    
+def get_fb_page_id(link):
+    url = urlopen(link, context=certificate)
+    page = BeautifulSoup(url.read(), 'lxml')
+    page_id_pattern = re.compile(r"PageID\(\"(.*?)-")
+    page_id = re.search(page_id_pattern, str(page))
+    
+    if page_id == None:
+        page_id_pattern = re.compile(r"\"pageLoadEventId\":\"(.*?)\"")
+        page_id = re.search(page_id_pattern, str(page))
+    
+    return int(page_id.group(1))

@@ -1,16 +1,3 @@
-def match_twitter_posts(links_file, export_file):
-
-    links = pd.read_excel(links_file)
-    links['post_id'] = links.iloc[:,0].apply(lambda x: x.split('/')[-1])
-
-    export = pd.read_excel(export_file)
-    export['post_id'] = export['Link to post'].apply(lambda x: x.split('/')[-1])
-
-    matched_posts =  pd.merge(data, export, on='post_id')
-    
-    return matched_posts
-
-
 def get_clean_url(link: str):
     fb_link_formats = ['facebook.com', 'fb.com']
     for item in fb_link_formats:
@@ -83,3 +70,15 @@ def get_fb_page_id(link):
         page_id = re.search(page_id_pattern, str(page))
     
     return int(page_id.group(1))
+
+
+def get_ad_id(link):
+    ad_id = np.nan
+    if 'facebook.com' in link:
+        if '?dco_ad_id=' in link:
+            try:
+                ad_id = int(link.split('?dco_ad_id=')[-1])
+            except:
+                ad_id = int(link.split('?dco_ad_id=')[-1].split('&dco_ad_token')[0])
+    
+    return ad_id

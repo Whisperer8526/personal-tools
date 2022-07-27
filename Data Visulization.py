@@ -40,3 +40,20 @@ def get_multi_countplot(data, n_row=1, n_col=1, figsize=(20,20)):
     sns.countplot(x=column, data=data, ax=axes[next(idx)])
 
   return plt.show()
+
+
+def draw_correlation_matrix_heatmap(data, size_width=10, size_height=10):
+
+    corr_matrix = data.corr()
+    mask = np.triu(np.ones_like(corr_matrix, dtype=bool))
+
+    fig, ax = plt.subplots(figsize=(size_width, size_height))
+    
+    return sns.heatmap(corr_matrix, 
+                       annot=True, 
+                       square=True, 
+                       ax=ax, 
+                       vmin=-1, 
+                       vmax=1, 
+                       cmap="RdBu_r", 
+                       mask=mask)

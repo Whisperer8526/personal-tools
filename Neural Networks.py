@@ -24,3 +24,11 @@ def plot_loss(history, min, max):
   plt.ylabel('Error')
   plt.legend()
   plt.grid(True)
+
+  
+def ratio_loss(y_true, y_pred):
+    return abs(1 - (y_pred / y_true))
+  
+def root_mean_squared_error(y_true, y_pred):
+    from keras import backend as K
+    return K.sqrt(K.mean(K.square(y_pred - y_true), axis=-1))

@@ -1,3 +1,5 @@
+import seaborn as sns
+import matplotlib.pyplot as plt
 from scipy import signal
 import statsmodels.api as sm
 from sklearn.cluster import DBSCAN
@@ -24,3 +26,19 @@ def detrend_timeseries_data(data):
         data[f'{column}_detrend'] = detrend
 
     return data.dropna()
+
+
+def plot_feature_and_outliers(data_and_mapped_outliers, feature_name, ax):
+    """
+    Plots outliers as red dots on time series lineplot.
+    """
+    # Get frame containing outliers only
+    outlier_frame = data_and_mapped_outliers.loc[data_and_mapped_outliers[f"{feature_name}_detrend_outlier"]==True, f"{feature_name}_detrend"]
+    # Line plot for relative humidity
+    out = sns.lineplot(x=data_and_mapped_outliers.index, y=data_and_mapped_outliers[f"{feature_name}_detrend"], ax=ax) 
+    # Adding outliers as red dots
+    sns.scatterplot(x=outlier_frame.index, y=outlier_frame, color="red", ax=ax)
+    # Title and lables
+    out.set(xlabel='Date', ylabel=f'{feature_name}_detrend', title=f'{feature_name}')
+    # Legend
+    plt.legend(labels=[f'{feature_name}', 'Outlier'], ax=ax)

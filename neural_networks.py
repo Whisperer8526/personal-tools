@@ -16,14 +16,17 @@ def lrfn(epoch):
 lr = keras.callbacks.LearningRateScheduler(lambda epoch: lrfn(epoch), verbose=True)
 
 
-def plot_loss(history, min, max):
-  plt.plot(history.history['loss'], label='loss')
-  plt.plot(history.history['val_loss'], label='val_loss')
-  plt.ylim([min, max])
-  plt.xlabel('Epoch')
-  plt.ylabel('Error')
-  plt.legend()
-  plt.grid(True)
+def plot_loss(history):
+    minimum = pd.Series(history.history['val_loss']).min()-100 
+    maximum = pd.Series(history.history['loss']).max()+100
+    
+    plt.plot(history.history['loss'], label='loss')
+    plt.plot(history.history['val_loss'], label='val_loss')
+    plt.ylim([minimum, maximum])
+    plt.xlabel('Epoch')
+    plt.ylabel('Error')
+    plt.legend()
+    plt.grid(True)
 
   
 def ratio_loss(y_true, y_pred):

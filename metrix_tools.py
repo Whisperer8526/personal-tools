@@ -21,6 +21,26 @@ def get_clean_url(link: str):
         else:
             return link
         
+        
+def map_ig_shortcode(link: str) -> str:
+    try:
+        if 'instagram.com' in link:
+            shortcode = link.split('/')[-1]
+            if '#advertiser' or 'reel' in shortcode:
+                return link.split('/')[-2]
+            elif 'igshid=' in shortcode:
+                return link.split('/')[-3]
+            elif len(shortcode) < 10:
+                return link.split('/')[-2]
+            elif len(shortcode) != 0 and 'copy_link' not in shortcode:
+                return shortcode
+            else:
+                return link.split('/')[-2]
+        else:
+            return np.nan
+    except:
+        return np.nan
+        
  
 def map_post_id(link: str):
     try:

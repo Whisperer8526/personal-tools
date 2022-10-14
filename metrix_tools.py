@@ -25,36 +25,63 @@ def get_clean_url(link: str):
 def map_post_id(link: str):
     try:
         if 'twitter.com' in link:
-            return int(link.split('/')[-1].split('?')[0])
-        if 'tiktok.com' in link:
-            return int(link.split('/')[-1])
+            return str(link.split('/')[-1].split('?')[0])
+        elif 'tiktok.com' in link:
+            try:
+                return str(int(link.split('/')[-1]))
+            except:
+                return str(link.split('/')[-1].split('?')[0])
         elif 'facebook.com' in link:
             try:
                 post_id = int(link.split('/')[-1])
             except:
                 if '?dco_ad_id' in link:
-                    return int(link.split('?dco_ad_id')[0].split('/')[-1])
+                    return str(int(link.split('?dco_ad_id')[0].split('/')[-1]))
                 else:
                     try:
                         post_id = int(link.split('/')[-2])
                     except:
-                        post_id = 0
+                        try:
+                            post_id = int(link.split('?s=')[-2].split('/')[-1])
+                        except:
+                            post_id = 0
 
-            return post_id
+            return str(post_id).rstrip('.0')
         
-        elif 'instagram.com' in link:
-            post_id = link.split('/')[-1]
-            if '#advertiser' in post_id:
-                return link.split('/')[-2]
-            elif len(post_id) != 0 and 'copy_link' not in post_id:
-                return post_id
-            else:
-                return link.split('/')[-2]
+        elif 'fb.watch' in link:
+            url = urlopen(link, context=certificate)
+            page = BeautifulSoup(url.read(), 'lxml')
+            try:
+                pattern = re.compile(r'\"video_id\":\"(.*?)\"')
+                post_id = re.search(pattern, str(page)).group(1)
+            except AttributeError:
+                pattern = re.compile(r'\"v\":\"(.*?)\"')
+                post_id = re.search(pattern, str(page)).group(1)
+            
+            return str(post_id).rstrip('.0')
+        
+        
+        elif 'instagram.com' in link and GET_IG_POST_IDS:
+            shortcode = map_ig_shortcode(link)
+            url = urlopen(f'https://www.instagram.com/p/{shortcode}/', context=certificate)
+            page = BeautifulSoup(url.read(), 'lxml')
+            pattern = re.compile(r"\"media_id\":\"(.*?)\"")
+            post_id = int(re.search(pattern, str(page)).group(1))
+            
+            return post_id
 
         elif 'youtube.com' in link:
-            return link.split('?v=')[-1]
+            if 'shorts' in link:
+                return link.split('/')[-1]
+            else:
+                return link.split('?v=')[-1].split('&v=')[-1]
+        
+        elif 'youtu.be' in link:
+            return link.split('/')[-1].split('?t=')[0]
+        
         else:
             return np.nan
+    
     except:
         return np.nan
 

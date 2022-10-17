@@ -129,3 +129,15 @@ def get_ad_id(link):
                 ad_id = int(link.split('?dco_ad_id=')[-1].split('&dco_ad_token')[0])
     
     return ad_id
+
+
+def deduplicate_links(dataframe):
+    all_dedup = pd.DataFrame()
+    for id_type in ['ad_id', 'post_id', 'shortcode']:
+        dedup = dataframe[~(dataframe[id_type].duplicated()) | 
+                          (dataframe[id_type].isnull())]
+        all_dedup = pd.concat([all_dedup, dedup])
+        
+    all_dedup = all_dedup.drop_duplicates(subset='url')
+    
+    return all_dedup

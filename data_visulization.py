@@ -59,7 +59,7 @@ def draw_correlation_matrix_heatmap(data, size_width=10, size_height=10):
                        mask=mask)
   
   
-def plot_event_duration(labels, start_dates, end_dates, linewidth=7, figsize=(15,7)):
+def plot_event_duration(labels, start_dates, end_dates, linewidth=7, figsize=(15,7), reference_lines=False):
     
     import datetime as dt
     import matplotlib.pyplot as plt
@@ -73,14 +73,15 @@ def plot_event_duration(labels, start_dates, end_dates, linewidth=7, figsize=(15
                     linewidth=linewidth)
 
     x_ticks = pd.date_range(start= start_dates.min(), 
-                           end= dt.datetime.now(), freq='MS' )
+                           end= end_dates.max(), freq='MS' )
 
     plt.xticks(ticks= x_ticks, 
                labels= [date.strftime("%m-%Y") for date in x_ticks],
                rotation=60)
-
-    #plt.axvline(x=dt.datetime.now(), color='r', ls=(':'))
-    #plt.axvline(x=dt.datetime(2021,1,1).date(), color='gray', ls=':', linewidth=1)
-    #plt.axvline(x=dt.datetime(2022,1,1).date(), color='gray', ls=':', linewidth=1)
+    
+    if reference_lines:
+        plt.axvline(x=dt.datetime.now(), color='r', ls=('-'), linewidth=2)
+        for year in start_dates.dt.year.unique():
+            plt.axvline(x=dt.datetime(year,1,1).date(), color='gray', ls=':', linewidth=1)
     
     return plt.show()

@@ -42,3 +42,24 @@ def plot_feature_and_outliers(data_and_mapped_outliers, feature_name, ax):
     out.set(xlabel='Date', ylabel=f'{feature_name}_detrend', title=f'{feature_name}')
     # Legend
     plt.legend(labels=[f'{feature_name}', 'Outlier'], ax=ax)
+    
+
+    
+def plot_time_series(data_features, data_start_date, data_end_date):
+    fig, ax = plt.subplots(figsize=(12, 7))
+    ax = ax.xaxis_date()
+    ax = plt.hlines(data_features, 
+                    dates.date2num(data_start_date), 
+                    dates.date2num(data_end_date),
+                    linewidth=7)
+
+    x_ticks = pd.date_range(start= data_start_date.min(), 
+                           end= data_end_date.max(), freq='MS' )
+
+    plt.xticks(ticks= x_ticks, 
+               labels= [date.strftime("%m-%Y") for date in x_ticks],
+               rotation=60)
+
+    #plt.axvline(x=dt.datetime.now(), color='r', ls=':')
+    
+    return plt.show()
